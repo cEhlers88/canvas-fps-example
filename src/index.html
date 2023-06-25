@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Canvas FPS Example</title>
+    </head>
+    <body>
+        <div class="content">
+            <h1>Canvas FPS Example</h1>
+            <div class="app-buttons">
+                <button class="js-app-language" data-language="de">Deutsch</button>
+                <button class="js-app-language" data-language="en">English</button>
+            </div>
+
+            <div class="description">
+                <div data-lang="de">
+                    <p>Demonstration von unterschiedlichen Mechanismen zum ermitteln und beeinflussen der FPS-Rate.</p>
+                    <ul>
+                        <li><strong>Traditional FPS Counter</strong> - Der Traditional FPS Counter ist ein einfacher Ansatz zur FPS-Berechnung, der sich
+                            durch seine Einfachheit und Benutzerfreundlichkeit auszeichnet. Er misst die Anzahl der Frames, die
+                            in einer Sekunde gerendert werden, und aktualisiert den FPS-Wert einmal pro Sekunde. Diese Methode
+                            ist leicht verständlich und schnell umsetzbar, was sie ideal für Einsteiger macht. Allerdings bietet
+                            sie eine weniger genaue FPS-Berechnung, da sie immer eine Sekunde zurückhängt.</li>
+                        <br/>
+                        <li><strong>Advanced FPS Counter</strong> - Die Advanced FPS Counter-Methode bietet eine genauere und granularere FPS-Berechnung.
+                            Sie ermittelt die FPS-Rate auf der Basis der verstrichenen Zeit zwischen dem letzten und dem aktuellen Frame.
+                            Obwohl diese Methode einen größeren Rechenaufwand erfordert und zur lesbaren Darstellung geglättet werden
+                            muss, ermöglicht sie eine detaillierte Analyse der Performance. Diese Methode ist besonders nützlich,
+                            wenn präzise, zeitnahe Daten zur Leistung benötigt werden.</li>
+                    </ul>
+                </div>
+                <div data-lang="en">
+                    <p>Demonstration of different mechanisms for determining and influencing the FPS rate.</p>
+                    <ul>
+                        <li><strong>Traditional FPS Counter</strong> - The Traditional FPS Counter is a straightforward approach to FPS calculation that
+                            stands out for its simplicity and ease of use. It measures the number of frames rendered in a second
+                            and updates the FPS value once per second. This method is easy to understand and quick to implement,
+                            making it ideal for beginners. However, it provides a less accurate FPS calculation as it always lags
+                            behind by one second.</li>
+                        <br/>
+                        <li><strong>Advanced FPS Counter</strong> - The Advanced FPS Counter method provides a more accurate and granular FPS calculation.
+                            It determines the FPS rate based on the elapsed time between the last and current frame. Although this method
+                            requires more computational effort and needs to be smoothed for readable display, it allows for a detailed
+                            performance analysis. This method is particularly useful when precise, timely performance data is required.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="app-buttons">
+                <button class="js-app-fps-mode" data-type="simple">Traditional FPS Counter</button>
+                <button class="js-app-fps-mode" data-type="calculating">Advanced FPS Counter</button>
+            </div>
+            <div class="app-buttons">
+                <input type="range" min="1" max="150" value="50" class="js-fps-target">
+                <button class="js-app-toggle-smooth">Smooth FPS-Rate</button>
+            </div>
+
+            <canvas height="300" width="300"></canvas>
+
+            <h2 data-lang="de">Beispiel Traditional FPS Counter</h2>
+            <h2 data-lang="en">Example Traditional FPS Counter</h2>
+            <pre>
+                <code class="language-javascript">
+        class App {
+            fpsCounter = 0;
+            fpsOutput = 0;
+            fpsLastUpdateTime = 0;
+
+            update(){
+                if(Date.now() - this.fpsLastUpdateTime >= 1000){
+                    this.fpsOutput = this.fpsCounter;
+                    this.fpsCounter = 0;
+                    this.fpsLastUpdateTime = Date.now();
+                }
+                //...
+                this.fpsCounter++;
+            }
+        }
+                </code>
+            </pre>
+            <div data-lang="de">
+                <p>In diesem Codeausschnitt haben wir einen FPS (Frames Per Second) Zähler, der in der `App` Klasse implementiert
+                    ist. Die Klasse enthält drei Eigenschaften, `fpsCounter`, `fpsOutput` und `fpsLastUpdateTime`:</p>
+                <ul>
+                    <li>`fpsCounter` erhöht sich mit jedem Frame und repräsentiert die Anzahl der verarbeiteten Frames.</li>
+                    <li>`fpsOutput` hält den FPS-Wert, der angezeigt oder in Berechnungen verwendet wird.</li>
+                    <li>`fpsLastUpdateTime` verfolgt, wann die FPS zuletzt aktualisiert wurden.</li>
+                </ul>
+                <p>Die Methode `update()` wird für jeden verarbeiteten Frame aufgerufen. In dieser Methode wird überprüft, ob
+                    eine Sekunde oder mehr seit der letzten FPS-Aktualisierung vergangen ist. Wenn ja, setzt es `fpsOutput` auf den
+                    aktuellen `fpsCounter` Wert (die Anzahl der Frames, die in dieser Sekunde verarbeitet wurden), setzt `fpsCounter`
+                    auf null zurück und aktualisiert `fpsLastUpdateTime` auf die aktuelle Zeit. Ist weniger als eine Sekunde vergangen,
+                    erhöht es einfach `fpsCounter`.</p>
+            </div>
+            <div data-lang="en">
+                <p>In this code snippet, we have an FPS (Frames Per Second) counter implemented within the `App` class.
+                The class holds three properties, `fpsCounter`, `fpsOutput`, and `fpsLastUpdateTime`:</p>
+                <ul>
+                    <li>`fpsCounter` increments with each frame, representing the number of frames processed.</li>
+                    <li>`fpsOutput` holds the FPS value to be displayed or used in calculations.</li>
+                    <li>`fpsLastUpdateTime` tracks when the FPS was last updated.</li>
+                </ul>
+                <p>The method `update()` is called for each frame processed. Inside this method, it checks if a second
+                or more has passed since the last FPS update. If so, it sets `fpsOutput` to the current `fpsCounter`
+                value (the number of frames processed in that second), resets `fpsCounter` to zero, and updates
+                `fpsLastUpdateTime` to the current time. If less than a second has passed, it simply increments `fpsCounter`.</p>
+            </div>
+
+            <h2 data-lang="de">Beispiel Advanced FPS Counter</h2>
+            <h2 data-lang="en">Example Advanced FPS Counter</h2>
+            <pre>
+                <code class="language-javascript">
+        class App {
+            fpsOutput = 0;
+            fpsLastUpdateTime = 0;
+
+            update(){
+                const deltaTime = Date.now() - this.fpsLastUpdateTime;
+                this.fpsOutput = Math.round(1000 / deltaTime);
+                this.fpsLastUpdateTime = Date.now();
+            }
+        }
+                </code>
+            </pre>
+            <div data-lang="de">
+                <p>In diesem Codeausschnitt haben wir einen FPS (Frames Per Second) Zähler, der in der `App` Klasse implementiert
+                    ist. Die Klasse enthält zwei Eigenschaften, `fpsOutput` und `fpsLastUpdateTime`:</p>
+                <ul>
+                    <li>`fpsOutput` hält den FPS-Wert, der angezeigt oder in Berechnungen verwendet wird.</li>
+                    <li>`fpsLastUpdateTime` verfolgt, wann die FPS zuletzt aktualisiert wurden.</li>
+                </ul>
+                <p>Die Methode `update()` wird für jeden verarbeiteten Frame aufgerufen. In dieser Methode wird die
+                Zeitdifferenz (`deltaTime`) zwischen der aktuellen Zeit und der letzten Aktualisierungszeit berechnet.
+                Anschließend wird `fpsOutput` auf den Kehrwert von `deltaTime` berechnet und auf die nächste Ganzzahl gerundet.
+                Dies repräsentiert die Anzahl der Frames, die in einer Sekunde dargestellt werden können. Schließlich wird
+                `fpsLastUpdateTime` auf die aktuelle Zeit gesetzt, um für die nächste Aktualisierung vorbereitet zu sein.
+                </p>
+            </div>
+            <div data-lang="en">
+                <p>In this code snippet, we have an FPS (Frames Per Second) counter implemented within the `App` class.
+                The class holds two properties, `fpsOutput` and `fpsLastUpdateTime`:
+                </p>
+                <ul>
+                    <li>`fpsOutput` holds the FPS value to be displayed or used in calculations.</li>
+                    <li>`fpsLastUpdateTime` tracks when the FPS was last updated.</li>
+                </ul>
+                <p>The method `update()` is called for each frame processed. Inside this method, it calculates the time
+                difference (`deltaTime`) between the current time and the last update time. Then, `fpsOutput` is calculated
+                as the reciprocal of `deltaTime` and rounded to the nearest whole number. This represents the number of frames
+                that can be rendered in one second. Finally, `fpsLastUpdateTime` is set to the current time to be prepared
+                for the next update.</p>
+            </div>
+
+
+
+
+            <div data-lang="de">
+                <h2>Pro / Contra</h2>
+                <div class="pro-contra">
+                    <h3>Traditional FPS Counter</h3>
+                    Pro
+                    <ul>
+                        <li>Leicht verständlich, schnell umsetzbar</li>
+                        <li>Muss zur lesbaren Darstellung nicht geglättet werden</li>
+                        <li>Optimal für einfache Anwendungen oder zum Einstieg in die FPS-Berechnung</li>
+                        <li>Bietet eine ausreichende Genauigkeit für die meisten Anwendungsfälle</li>
+                    </ul>
+                    Contra
+                    <ul>
+                        <li>Die Messung dauert immer eine Sekunde und hängt entsprechend zurück</li>
+                        <li>Nicht geeignet für detaillierte Analyse der Performance in Echtzeit</li>
+                    </ul>
+                </div>
+                <div class="pro-contra">
+                    <h3>Advanced FPS Counter</h3>
+                    Pro
+                    <ul>
+                        <li>Liefert sekundengenau die aktuelle FPS-Rate</li>
+                        <li>Ermöglicht eine detaillierte Analyse der Performance</li>
+                        <li>Nützlich, wenn präzise, zeitnahe Daten zur Leistung benötigt werden</li>
+                    </ul>
+                    Contra
+                    <ul>
+                        <li>Muss zur lesbaren Darstellung geglättet werden</li>
+                        <li>Die Ermittlung der FPS-Rate erfordert einen größeren Rechenaufwand</li>
+                        <li>Kann für Anfänger komplizierter sein</li>
+                    </ul>
+                </div>
+                <h2>Fazit</h2>
+                <p>Der Traditional FPS Counter und die Calculating-Methode bieten jeweils ihre eigenen Vorteile, abhängig von der Anforderung und dem Kenntnisstand des Nutzers. Der Traditional FPS Counter, obwohl weniger genau, ist für Einsteiger verständlicher und einfacher zu implementieren. Seine Werte aktualisieren sich nur einmal pro Sekunde, was eine mühelose Ablesbarkeit ermöglicht, ohne zusätzliche Aufbereitung.</p>
+                <p>Für die meisten Anwendungen ist eine millisekundengenaue Angabe der FPS-Rate nicht entscheidend. Daher ist der Traditional FPS Counter in der Regel völlig ausreichend und bietet eine gute Balance zwischen Funktionalität und Benutzerfreundlichkeit.</p>
+                <p>Jedoch gibt es Szenarien, in denen eine genauere Analyse erforderlich ist, zum Beispiel wenn man die Auswirkungen einer bestimmten Aktion auf die FPS-Rate millisekundengenau ermitteln muss. In solchen Fällen ist die Advanced FPS Counter-Methode unverzichtbar. Sie erfordert zwar etwas mehr Programmiergeschick, liefert jedoch detaillierte Einblicke, wenn diese benötigt werden.</p>
+            </div>
+            <div data-lang="en">
+                <h2>Pros / Cons</h2>
+                <div class="pro-contra">
+                    <h3>Traditional FPS Counter</h3>
+                    Pros
+                    <ul>
+                        <li>Easy to understand, quick to implement</li>
+                        <li>No need for smoothing for readable display</li>
+                        <li>Ideal for simple applications or getting started with FPS calculation</li>
+                        <li>Provides sufficient accuracy for most use cases</li>
+                    </ul>
+                    Cons
+                    <ul>
+                        <li>Measurement always takes a second and thus lags behind</li>
+                        <li>Not suitable for detailed real-time performance analysis</li>
+                    </ul>
+                </div>
+                <div class="pro-contra">
+                    <h3>Advanced FPS Counter</h3>
+                    Pros
+                    <ul>
+                        <li>Delivers current FPS rate on a per-second basis</li>
+                        <li>Allows for a detailed performance analysis</li>
+                        <li>Useful when precise, timely performance data is required</li>
+                    </ul>
+                    Cons
+                    <ul>
+                        <li>Requires smoothing for readable display</li>
+                        <li>Determining the FPS rate involves more computational effort</li>
+                        <li>Can be more complicated for beginners</li>
+                    </ul>
+                </div>
+                <h2>Conclusion</h2>
+                <p>Both the Traditional FPS Counter method and the Calculating method offer their own advantages, depending on the requirements and the user's familiarity with the subject matter. The Traditional FPS Counter method, while less precise, is more understandable and easier to implement for beginners. Its values update only once per second, providing an effortless readability without any additional processing.</p>
+                <p>For most applications, a millisecond-accurate indication of the FPS rate is not critical. Hence, the Traditional FPS Counter is usually completely sufficient, offering a good balance between functionality and user-friendliness.</p>
+                <p>However, there are scenarios where a more accurate analysis is required, for instance, when one needs to determine the effects of a particular action on the FPS rate to the millisecond. In such cases, the Advanced FPS Counter method is indispensable. It may require a bit more coding finesse but provides detailed insights when needed.</p>
+            </div>
+        </div>
+    </body>
+</html>
